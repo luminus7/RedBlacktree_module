@@ -3,7 +3,9 @@
   2020-2 LINUX kernel lect. CAUCSE
   test module for Linux kernel 5.4.0 version.
 */
+//kernel.h는 rbtree_augmented.h에 rbtree.h랑 같이 include된다.
 
+#include "sj_queue.h"
 #include <linux/rbtree_augmented.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -12,8 +14,8 @@
 
 #define COMPARE(x,y) ( ((x)<(y))? -1 : ((x)==(y))? 0 : 1)
 #define __param(type, name, init, msg)		\
-	static type name = init;		\
-	module_param(name, type, 0444);		\
+	static type name = init;				\
+	module_param(name, type, 0444);			\
 	MODULE_PARM_DESC(name, msg);
 
 __param(int, num_nodes, 15, "Number of nodes in the rb-tree");
@@ -93,56 +95,8 @@ struct test_node *search(int find_key, struct rb_root *tree_root)
 	printk(KERN_INFO "*NO SEARCH RESULT*");
 	return NULL;
 }
-//statically allocated circular queue (one space empty)
 
-#define MAX_QUEUE_SIZE 10
-#define TRUE 1
-#define FALSE 0
-
-struct rb_node *queue[MAX_QUEUE_SIZE];
-
-int front = 0;
-int rear = 0;
-
-//handle case of full queue
-bool queue_full()
-{
-	if( (rear + 1) % MAX_QUEUE_SIZE == front )
-		return TRUE;
-	else
-		return FALSE;
-}
-
-//handle case of empty queue
-bool queue_empty()
-{
-	if( front == rear )
-		return TRUE;
-	else
-		return FALSE;
-}
-
-void Enqueue(struct rb_node *rb_ptr)
-{
-	if( queue_full() ){
-		printk(KERN_ALERT "**Queue is FULL**");
-		return;	
-	}
-	rear = (rear + 1) % MAX_QUEUE_SIZE;
-	queue[rear] = rb_ptr;
-}
-
-struct rb_node *Dequeue()
-{
-	struct rb_node *dummy = NULL;
-	if( queue_empty() ){
-		printk(KERN_ALERT "**Queue is EMPTY**");
-		return dummy;
-	}
-	front = (front + 1) % MAX_QUEUE_SIZE;
-	return queue[front];
-}
-
+//traverse in level_order and print out at each traversal of node.
 int level_order_print(struct rb_root *tree_root)
 {
 	int a = 0;
