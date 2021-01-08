@@ -1,7 +1,24 @@
-#include "sj_queue.h"
+// statically allocated circular queue (one space empty)
+// Made for level_order traversal(BFS) of RBtree.
 
-//handle case of full queue
-bool queue_full()
+#include <linux/kernel.h>
+#include <linux/rbtree_augmented.h>
+
+#define MAX_QUEUE_SIZE 10
+#define TRUE 1
+#define FALSE 0
+
+struct rb_node *queue[MAX_QUEUE_SIZE];
+
+static int front = 0;
+static int rear = 0;
+
+bool queue_full(void);          // handle case of full queue
+bool queue_empty(void);         // handle case of empty queue
+void Enqueue(struct rb_node *);
+struct rb_node *Dequeue(void);
+
+bool queue_full(void)
 {
 	if( (rear + 1) % MAX_QUEUE_SIZE == front )
 		return TRUE;
@@ -9,8 +26,7 @@ bool queue_full()
 		return FALSE;
 }
 
-//handle case of empty queue
-bool queue_empty()
+bool queue_empty(void)
 {
 	if( front == rear )
 		return TRUE;

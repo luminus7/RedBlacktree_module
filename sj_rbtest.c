@@ -5,7 +5,7 @@
 */
 //kernel.h는 rbtree_augmented.h에 rbtree.h랑 같이 include된다.
 
-#include "sj_queue.h"
+#include <linux/kernel.h>
 #include <linux/rbtree_augmented.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
